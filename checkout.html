@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ご注文内容の確認｜マレーシア eSIM | EasyGoSim</title>
+  <meta name="description" content="マレーシア旅行用eSIMのプランとご注文内容を確認し、出発日を入力して安全にお申し込みいただけます。">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+  <header class="checkout-header">
+    <a href="index.html" aria-label="EasyGoSim ホーム"><img src="assets/logo.png" alt="EasyGoSim"></a>
+    <span>安全なお申し込み</span>
+  </header>
+
+  <main class="checkout-wrap">
+    <nav class="checkout-steps" aria-label="お申し込み手順">
+      <span class="active"><b>1</b> 注文内容の確認</span><i>›</i><span><b>2</b> 安全なお支払い</span><i>›</i><span><b>3</b> QRコード受け取り</span>
+    </nav>
+
+    <div class="checkout-grid">
+      <section class="checkout-card">
+        <p class="eyebrow">MALAYSIA eSIM</p>
+        <h1>マレーシア旅行用 eSIM</h1>
+        <p class="intro">ご注文内容をご確認のうえ、出発日とお客様情報をご入力ください。</p>
+
+        <div class="product-overview">
+          <div class="product-title"><strong id="summary-plan">7日間 50GB</strong><span>旅行・出張におすすめ</span></div>
+          <div class="badges"><span>CelcomDigi</span><span>5G</span><span>現地電話番号</span><span>通話対応</span></div>
+        </div>
+
+        <section class="confirm-box">
+          <h2>購入前にご確認ください</h2>
+          <ul class="check-list">
+            <li>ご利用開始日は、マレーシア到着日を選択してください。</li>
+            <li>eSIM対応端末かどうか、事前にご確認ください。</li>
+            <li>QRコードは決済完了後、ご入力のメールアドレスへお送りします。</li>
+          </ul>
+        </section>
+
+        <form id="checkout-form">
+          <fieldset>
+            <legend>ご利用情報</legend>
+            <label>マレーシア出発日 <span class="required">必須</span><input id="departure-date" name="departure_date" type="date" required><small>マレーシアへ出発する日、またはeSIMを利用開始する日を選択してください。</small></label>
+          </fieldset>
+          <fieldset>
+            <legend>お客様情報</legend>
+            <label>お名前 <span class="required">必須</span><input name="name" type="text" autocomplete="name" placeholder="山田 太郎" required></label>
+            <label>メールアドレス <span class="required">必須</span><input name="email" type="email" autocomplete="email" placeholder="example@email.com" required><small>eSIMのQRコードの送付先になります。</small></label>
+          </fieldset>
+          <label class="agree"><input name="agree" type="checkbox" required> <span>利用規約とプライバシーポリシーに同意します。</span></label>
+          <button class="submit-button" type="submit">安全な決済へ進む <span>›</span></button>
+          <p class="form-note">お支払い情報は安全に処理されます。</p>
+          <p id="checkout-message" class="checkout-message" role="alert"></p>
+        </form>
+      </section>
+
+      <aside class="order-card" aria-label="ご注文内容">
+        <h2>ご注文内容</h2>
+        <div class="summary-product"><div><span class="summary-label">Malaysia Tourist eSIM</span><strong id="summary-plan-side">7日間 50GB</strong></div><strong id="summary-price">¥1,980</strong></div>
+        <dl>
+          <div><dt>通信容量・期間</dt><dd id="summary-spec">50GB / 7日間</dd></div>
+          <div><dt>ネットワーク</dt><dd>5G / 4G</dd></div>
+          <div><dt>電話番号</dt><dd>現地番号・通話対応</dd></div>
+          <div class="total"><dt>合計</dt><dd id="summary-total">¥1,980</dd></div>
+        </dl>
+        <div class="payment-note"><strong>安全なお支払い</strong><p>決済完了後、登録メールアドレスへQRコードをお送りします。</p></div>
+        <div class="order-help"><strong>ご不明な点はLINEでご相談ください</strong><a href="https://line.me/R/ti/p/@712unbyr" target="_blank" rel="noopener">LINE公式アカウント @712unbyr</a></div>
+        <a class="back-link" href="index.html#plans">‹ プラン選択へ戻る</a>
+      </aside>
+    </div>
+  </main>
+  <script src="checkout.js" defer></script>
+</body>
+</html>
