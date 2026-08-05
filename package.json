@@ -1,0 +1,8 @@
+{
+  "name": "easygosim-japan",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EasyGoSim Japan website and preserved legacy routes",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
