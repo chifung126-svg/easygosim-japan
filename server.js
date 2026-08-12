@@ -1,10 +1,9 @@
-import crypto from "node:crypto";
-import fs from "node:fs";
-import http from "node:http";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+const crypto = require("node:crypto");
+const fs = require("node:fs");
+const http = require("node:http");
+const path = require("node:path");
 
-const root = path.dirname(fileURLToPath(import.meta.url));
+const root = __dirname;
 const plans = { 7: { data: "40GB", amount: 1980 }, 15: { data: "80GB", amount: 2640 }, 30: { data: "120GB", amount: 3840 } };
 const env = (name) => { const value = process.env[name]; if (!value) throw new Error(`Missing environment variable: ${name}`); return value; };
 const json = (res, status, body) => { res.writeHead(status, { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "https://esim.easygosim.com", "access-control-allow-headers": "content-type", "access-control-allow-methods": "POST, OPTIONS" }); res.end(JSON.stringify(body)); };
