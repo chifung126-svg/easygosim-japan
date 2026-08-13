@@ -2,7 +2,9 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const jpCatalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'jp-products.json'), 'utf8'));
+let jpCatalog;
+try { jpCatalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'jp-products.json'), 'utf8')); }
+catch { jpCatalog = { currency: 'JPY', paymentMethodTypes: ['card'], products: { manual: [] } }; }
 const { createJapanOrder, createJapanPaymentLink, listJapanSkus } = require('./api/_lib/jp-backend');
 
 const root = __dirname;
