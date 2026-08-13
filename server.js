@@ -17,13 +17,14 @@ const mime = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf
 function route(requestPath) {
   const clean = requestPath.split('?')[0].replace(/\\/g, '/');
   if (clean === '/blogs/news/2' || clean === '/blogs/news/2/') return '/blogs/news/2/index.html';
+  if (clean === '/myesim' || clean === '/myesim/') return '/index.html';
   if (clean.startsWith('/products/')) return '/index.html';
   if (clean === '/korea-esim' || clean === '/korea-esim/') return '/korea-esim.html';
   if (clean === '/malaysia-esim-guide' || clean === '/malaysia-esim-guide/') return '/malaysia-esim-guide.html';
   if (clean === '/checkout' || clean === '/checkout/') return '/checkout.html';
   if (clean === '/jpesim-checkout' || clean === '/jpesim-checkout/') return '/jpesim-checkout.html';
   if (clean === '/jpesim-thank-you' || clean === '/jpesim-thank-you/') return '/jpesim-thank-you.html';
-  return clean === '/' ? '/index.html' : clean;
+  return clean === '/' ? '/home.html' : clean;
 }
 
 function readJsonBody(req) {
