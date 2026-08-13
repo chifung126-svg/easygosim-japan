@@ -5,7 +5,11 @@ const crypto = require('crypto');
 let jpCatalog;
 try { jpCatalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'jp-products.json'), 'utf8')); }
 catch { jpCatalog = { currency: 'JPY', paymentMethodTypes: ['card'], products: { manual: [] } }; }
-const { createJapanOrder, createJapanPaymentLink, listJapanSkus } = require('./api/_lib/jp-backend');
+let createJapanOrder;
+let createJapanPaymentLink;
+let listJapanSkus;
+try { ({ createJapanOrder, createJapanPaymentLink, listJapanSkus } = require('./api/_lib/jp-backend')); }
+catch { listJapanSkus = async () => []; }
 
 const root = __dirname;
 const mime = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.webp':'image/webp', '.svg':'image/svg+xml', '.json':'application/json; charset=utf-8', '.txt':'text/plain; charset=utf-8' };
