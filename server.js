@@ -176,7 +176,7 @@ async function handleApi(req, res, pathname) {
 }
 
 function sendJson(res, status, payload, requestOrigin) {
-  const allowedOrigins = new Set(['https://esim.easygosim.com', 'https://easygosim.com', 'https://easygosim.us', 'http://localhost:3000', 'http://127.0.0.1:3000']);
+  const allowedOrigins = new Set(['https://esim.easygosim.com', 'https://easygosim.com', 'https://www.easygosim.com', 'https://easygosim.us', 'http://localhost:3000', 'http://127.0.0.1:3000']);
   const origin = allowedOrigins.has(requestOrigin) ? requestOrigin : 'https://esim.easygosim.com';
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' });
   res.end(JSON.stringify(payload));
@@ -185,7 +185,7 @@ function sendJson(res, status, payload, requestOrigin) {
 
 const server = http.createServer((req, res) => {
   const pathname = (req.url || '/').split('?')[0];
-  if (req.method === 'OPTIONS' && pathname.startsWith('/api/')) { sendJson(res, 204, {}); return; }
+  if (req.method === 'OPTIONS' && pathname.startsWith('/api/')) { sendJson(res, 204, {}, req.headers.origin); return; }
   if (pathname.startsWith('/api/')) {
     handleApi(req, res, pathname).catch(error => sendJson(res, 500, { error: 'Internal server error' }));
     return;
