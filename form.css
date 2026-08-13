@@ -1,1 +1,21 @@
 :root{--ink:#171717;--muted:#667085;--line:#e5e7eb;--soft:#f5f8ff;--blue:#2563eb;--pink:#e41e63;--green:#16a34a}*{box-sizing:border-box}body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(145deg,#f7fbff,#fff 55%,#fff7fb);line-height:1.7}.form-header{height:78px;display:flex;align-items:center;justify-content:space-between;max-width:1060px;margin:auto;padding:0 24px}.form-brand img{display:block;width:178px;height:auto;object-fit:contain}.header-link{font-size:13px;color:var(--blue);font-weight:700}.form-shell{padding:38px 18px 76px}.form-card{max-width:720px;margin:auto;background:#fff;border:1px solid #e8edf5;border-radius:24px;padding:clamp(24px,5vw,52px);box-shadow:0 18px 50px #24457512}.form-eyebrow{margin:0 0 8px;color:var(--pink);font-size:12px;font-weight:800;letter-spacing:.14em}.form-card h1{font-size:clamp(29px,5vw,46px);line-height:1.25;margin:0 0 15px;letter-spacing:-.04em}.form-lead{color:var(--muted);font-size:14px;margin:0 0 26px}.notice{border-radius:16px;padding:18px 20px;margin-bottom:28px;font-size:13px}.notice--blue{background:var(--soft);border:1px solid #dbe7ff}.notice strong{display:block;margin-bottom:7px;color:#17449e}.notice ul{margin:0;padding-left:20px;color:#475467}.field{margin-top:20px}.field label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}.field label span{font-size:11px;color:#b42318;background:#fff1f0;border-radius:5px;padding:2px 6px;margin-left:5px}.field input{display:block;width:100%;border:1px solid #cfd6e2;border-radius:10px;padding:13px 14px;font:inherit;font-size:16px;background:#fff}.field input:focus{outline:3px solid #dbe7ff;border-color:var(--blue)}.field small{display:block;color:var(--muted);font-size:12px;margin-top:5px}.check-row{display:flex;gap:9px;align-items:flex-start;margin:25px 0;font-size:13px;font-weight:600}.check-row input{width:18px;height:18px;accent-color:var(--blue);margin-top:3px}.submit-button{width:100%;border:0;border-radius:11px;padding:15px 20px;background:var(--blue);color:#fff;font:inherit;font-weight:800;cursor:pointer}.submit-button:hover{background:#1d4ed8}.form-status{min-height:1.5em;margin:14px 0 0;color:var(--green);font-size:13px;text-align:center;font-weight:700}.guide-box{margin-top:32px;padding:22px;border-radius:16px;background:#fff9ed;border:1px solid #f8dfae}.guide-box h2{font-size:19px;margin:0 0 8px}.guide-box p{font-size:13px;color:#665b4b;margin:7px 0}.line-button{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:11px 16px;border-radius:9px;background:#06c755;color:#fff;font-size:13px;font-weight:800}.line-button span{opacity:.9;font-weight:600}.form-footer{text-align:center;padding:22px;color:var(--muted);font-size:12px}.form-footer a{text-decoration:underline}@media(max-width:560px){.form-header{height:68px;padding:0 16px}.form-brand img{width:150px}.header-link{font-size:11px}.form-shell{padding:18px 12px 44px}.form-card{border-radius:18px;padding:24px 18px}.notice{padding:15px;font-size:12px}.form-card h1{font-size:30px}}
+
+/* Mobile form polish: larger touch targets, clearer focus, and a submit bar that stays reachable. */
+@media (max-width: 560px) {
+  .form-header { position: relative; z-index: 2; background: #fff; }
+  .form-brand img { width: 136px; }
+  .header-link { padding: 10px 0; }
+  .form-shell { padding-bottom: 116px; }
+  .form-card { box-shadow: 0 10px 28px #24457514; }
+  .field { margin-top: 22px; }
+  .field input { min-height: 52px; border-radius: 12px; }
+  .check-row { min-height: 44px; align-items: center; margin: 24px 0 18px; }
+  .check-row input { flex: 0 0 22px; width: 22px; height: 22px; }
+  .submit-button { position: fixed; z-index: 5; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); width: auto; min-height: 54px; border-radius: 14px; box-shadow: 0 8px 24px #173a7750; }
+  .submit-button:disabled { opacity: .7; cursor: wait; }
+  .form-status { padding: 0 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}
