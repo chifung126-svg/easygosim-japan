@@ -70,6 +70,58 @@ async function createManualPayment(body) {
   return { order_no: orderNo, payment_url: payment.url };
 }
 
+function validEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+}
+
+function htmlEscape(value) {
+  return String(value || '').replace(/[&<>\"']/g, character => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[character]));
+}
+
+function extractEmail(value) {
+  const text = String(value || '');
+  const match = text.match(/<([^>]+)>/);
+  return (match ? match[1] : text).trim();
+}
+
+async function saveActivationRequest(body) {
+  const departureDate = String(body.departure_date || '').trim();
+  const email = String(body.email || '').trim().toLowerCase();
+  const amazonOrderNumber = String(body.amazon_order_number || '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(departureDate)) throw new Error('Invalid departure date');
+  if (!validEmail(email)) throw new Error('Invalid email address');
+  if (!/^\d{3}-\d{7}-\d{7}$/.test(amazonOrderNumber)) throw new Error('Invalid Amazon order number');
+
+  const supabaseUrl = requiredEnv('SUPABASE_URL').replace(/\/$/, '');
+  const serviceKey = requiredEnv('SUPABASE_SERVICE_ROLE_KEY');
+  const headers = { apikey: serviceKey, authorization: `Bearer ${serviceKey}`, 'content-type': 'application/json' };
+  const response = await fetch(`${supabaseUrl}/rest/v1/jp_activation_requests`, {
+    method: 'POST', headers: { ...headers, prefer: 'return=representation' },
+    body: JSON.stringify({ departure_date: departureDate, customer_email: email, amazon_order_number: amazonOrderNumber, source_domain: String(body.source_domain || '').trim().slice(0, 120) || null })
+  });
+  const saved = await response.json().catch(() => ({}));
+  if (!response.ok || !Array.isArray(saved) || !saved[0]?.id) throw new Error('Activation request could not be saved');
+  const request = saved[0];
+  const notifyEmail = extractEmail(process.env.ACTIVATION_NOTIFY_EMAIL || process.env.EMAIL_FROM);
+  let notificationStatus = 'failed';
+  let notificationError = null;
+  if (!process.env.RESEND_API_KEY || !validEmail(notifyEmail)) {
+    notificationError = 'Missing ACTIVATION_NOTIFY_EMAIL or a valid email address in EMAIL_FROM';
+  } else {
+    const emailResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST', headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ from: requiredEnv('EMAIL_FROM'), to: [notifyEmail], subject: `Malaysia eSIM activation request - ${amazonOrderNumber}`, html: `<h2>Malaysia eSIM activation request</h2><p><strong>Departure date:</strong> ${htmlEscape(departureDate)}</p><p><strong>Customer email:</strong> ${htmlEscape(email)}</p><p><strong>Amazon order:</strong> ${htmlEscape(amazonOrderNumber)}</p><p><strong>Request ID:</strong> ${htmlEscape(request.id)}</p>` })
+    });
+    if (emailResponse.ok) notificationStatus = 'sent';
+    else notificationError = (await emailResponse.text()).slice(0, 500);
+  }
+  await fetch(`${supabaseUrl}/rest/v1/jp_activation_requests?id=eq.${encodeURIComponent(request.id)}`, {
+    method: 'PATCH', headers: { ...headers, prefer: 'return=minimal' },
+    body: JSON.stringify({ notification_status: notificationStatus, notification_error: notificationError, status: notificationStatus === 'sent' ? 'notified' : 'pending', updated_at: new Date().toISOString() })
+  });
+  return { request_id: request.id, notification_sent: notificationStatus === 'sent' };
+}
+
 function findJapanProduct(sku) {
   return Object.values(jpCatalog.products).flat().find(product => product.sku === sku);
 }
@@ -78,6 +130,10 @@ async function handleApi(req, res, pathname) {
   if (req.method === 'POST' && pathname === '/api/create-order') {
     try { return sendJson(res, 200, { ok: true, ...(await createManualPayment(await readJsonBody(req))) }); }
     catch (error) { console.error('Japan manual order failed', error); return sendJson(res, 500, { ok: false, error: 'Unable to create payment' }); }
+  }
+  if (req.method === 'POST' && pathname === '/api/activation-request') {
+    try { return sendJson(res, 200, { ok: true, ...(await saveActivationRequest(await readJsonBody(req))) }, req.headers.origin); }
+    catch (error) { console.error('Activation request failed', error); return sendJson(res, 400, { ok: false, error: error.message || 'Unable to submit activation request' }, req.headers.origin); }
   }
   if (req.method === 'GET' && pathname === '/api/jp/catalog') {
     try {
@@ -118,8 +174,10 @@ async function handleApi(req, res, pathname) {
   return false;
 }
 
-function sendJson(res, status, payload) {
-  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': 'https://esim.easygosim.com', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' });
+function sendJson(res, status, payload, requestOrigin) {
+  const allowedOrigins = new Set(['https://esim.easygosim.com', 'https://easygosim.com', 'https://easygosim.us', 'http://localhost:3000', 'http://127.0.0.1:3000']);
+  const origin = allowedOrigins.has(requestOrigin) ? requestOrigin : 'https://esim.easygosim.com';
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' });
   res.end(JSON.stringify(payload));
   return true;
 }
