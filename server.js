@@ -129,8 +129,8 @@ function findJapanProduct(sku) {
 
 async function handleApi(req, res, pathname) {
   if (req.method === 'POST' && pathname === '/api/create-order') {
-    try { return sendJson(res, 200, { ok: true, ...(await createManualPayment(await readJsonBody(req))) }); }
-    catch (error) { console.error('Japan manual order failed', error); return sendJson(res, 500, { ok: false, error: 'Unable to create payment' }); }
+    try { return sendJson(res, 200, { ok: true, ...(await createManualPayment(await readJsonBody(req))) }, req.headers.origin); }
+    catch (error) { console.error('Japan manual order failed', error); return sendJson(res, 500, { ok: false, error: 'Unable to create payment' }, req.headers.origin); }
   }
   if (req.method === 'POST' && pathname === '/api/activation-request') {
     try { return sendJson(res, 200, { ok: true, ...(await saveActivationRequest(await readJsonBody(req))) }, req.headers.origin); }
